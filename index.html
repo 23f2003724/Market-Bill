@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bill Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:wght@600;800&family=Kalam:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --g1:#1b5a3c; --g2:#4f9d69; --g2d:#1f6b45; --g3:#a8d5b5; --g4:#e6f2e4;
+  --tomato:#e53935; --orange:#e9b44c; --ink:#1f3a8a; --purple-d:#c2452d; --purple-t:#fff3d6;
+  --seal:150px;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:12px;background:#f2eee2;font-family:'DM Sans','Noto Sans Devanagari',Arial,sans-serif;color:#222}
+.wrap{max-width:700px;margin:0 auto}
+.ico{display:inline-block}
+.ico svg{width:100%;height:100%;display:block}
+
+/* ---------- tabs & buttons ---------- */
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{flex:1;padding:10px 6px;border:2px solid var(--g2);background:#fff;color:var(--g1);border-radius:10px;
+  font-weight:700;font-family:inherit;cursor:pointer;font-size:14px}
+.tab.on{background:var(--g2d);color:#fff}
+.panel{background:#fff;border-radius:12px;padding:12px 14px;margin-top:12px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:0;border-radius:9px;padding:10px 14px;font-size:14px;font-weight:700;cursor:pointer;
+  background:var(--g2d);color:#fff;font-family:inherit}
+.btn.alt{background:#fff;color:var(--g1);border:2px solid var(--g2)}
+.btn.warn{background:#fff;color:#b3261e;border:2px solid #b3261e}
+.btn.sm{padding:6px 10px;font-size:12px}
+.hint{font-size:12px;color:#666;margin-top:8px}
+
+/* ================= THE BILL ================= */
+.bill{position:relative;background:#fffaf0;border:3px solid var(--g2);border-radius:16px;padding:6px;color:var(--g1)}
+.bill-in{position:relative;border:1.5px dashed var(--g3);border-radius:11px;padding:12px 12px 8px;overflow:hidden;
+  background:linear-gradient(180deg,#fffaf0 0%,#f4f9ee 100%)}
+.corner{position:absolute;width:30px;height:30px;z-index:3}
+.c1{top:-10px;left:-10px}
+.c2{top:-10px;right:-10px;transform:scaleX(-1)}
+.c3{bottom:-10px;left:-10px;transform:scaleY(-1)}
+.c4{bottom:-10px;right:-10px;transform:scale(-1,-1)}
+
+.top-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.logo-col{width:84px;flex-shrink:0;text-align:center}
+.logo-box{width:72px;height:72px;margin:0 auto;border-radius:50%;border:2.5px solid var(--g2);background:#fff;
+  overflow:hidden;display:flex;align-items:center;justify-content:center}
+.logo-box img{width:100%;height:100%;object-fit:contain}
+.logo-ph{display:none;font-size:11px;font-weight:700;color:#999}
+.tm-txt{font-size:10px;font-weight:700;margin-top:2px;color:var(--g1);font-family:'DM Sans',sans-serif}
+.top-mid{flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--purple-d);font-family:'Baloo 2','Noto Sans Devanagari',sans-serif}
+.phones{width:104px;flex-shrink:0;text-align:right;font-size:16px;font-weight:700;line-height:1.35;color:var(--g1);font-family:'DM Sans',sans-serif}
+
+.hero{display:flex;align-items:center;gap:10px;margin:6px 0 2px}
+.hero .hr{flex:1;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--g3))}
+.hero .hr.r{background:linear-gradient(270deg,transparent,var(--g3))}
+.hi{width:46px;height:46px}
+.hi.big{width:62px;height:62px}
+
+.shop-hi{
+  margin:4px 4px 2px;padding:3px 12px 5px;text-align:center;color:#fff;
+  font-family:'Baloo 2','Noto Sans Devanagari',sans-serif;font-weight:700;font-size:32px;line-height:1.3;word-break:break-word;
+  background:linear-gradient(90deg,var(--g2d),#2f8559 50%,var(--g2d));
+  border-radius:40px;border:2px solid var(--orange);
+}
+.shop-en{text-align:center;font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:25px;letter-spacing:.8px;
+  color:var(--g1);line-height:1.2;margin-top:4px;word-break:break-word}
+.tagline{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:6px auto 2px;width:94%;border:1.5px dashed var(--orange);border-radius:30px;background:var(--purple-t);
+  padding:3px 8px;font-weight:700;font-size:12.5px;color:var(--g1);text-align:center;font-family:'DM Sans',sans-serif
+}
+.lf{width:16px;height:16px;flex-shrink:0}
+.lf.flip{transform:scaleX(-1)}
+.addr{text-align:center;font-size:12.5px;color:#37474f;margin:3px 0 2px;font-family:'DM Sans','Noto Sans Devanagari',sans-serif;font-weight:500}
+
+.meta{font-size:13px;font-weight:700;color:var(--g1);margin-top:6px;font-family:'DM Sans',sans-serif}
+.meta .line{display:flex;align-items:flex-end;gap:8px;margin-top:3px}
+.meta .grow{flex:1;display:flex;align-items:flex-end;gap:4px;white-space:nowrap}
+.hand{
+  font-family:'Kalam','Caveat',cursive;font-size:18px;font-weight:700;color:var(--ink);
+  border:0;border-bottom:1.5px dotted #86b58f;background:transparent;outline:none;
+  width:100%;padding:0 3px;min-width:0;line-height:1.5;
+}
+.hand::placeholder{color:#c3cbbf;font-weight:400}
+.hand.num{text-align:right}
+.tl{text-align:left}
+
+.gwrap{position:relative;border:2px solid var(--g2);border-radius:8px;overflow:hidden;margin-top:8px;background:#fff}
+.wm{position:absolute;left:50%;top:58%;width:190px;height:190px;transform:translate(-50%,-50%);opacity:.10;z-index:0;pointer-events:none}
+table.goods{position:relative;z-index:1;width:100%;border-collapse:collapse;table-layout:fixed}
+table.goods th{
+  background:linear-gradient(180deg,#2f8559,var(--g2d));color:#fff;font-size:12px;padding:6px 2px;
+  border:1px solid var(--g2d);font-family:'DM Sans',sans-serif;font-weight:600;
+}
+table.goods td{border:1px solid #c5e0c9;height:36px;padding:0 3px;vertical-align:bottom}
+table.goods tbody tr:nth-child(even) td{background:rgba(232,245,233,.55)}
+.c-pkgs{width:11%}.c-name{width:34%}.c-wt{width:14%}.c-rate{width:14%}.c-amt{width:20%}.c-p{width:7%}
+.rowdel{border:0;background:none;color:#b3261e;font-weight:700;cursor:pointer;font-size:16px;padding:0}
+
+.bottom{display:flex;margin-top:8px;border:2px solid var(--g2);border-radius:8px;overflow:hidden;background:#fff}
+.left-box{width:62%;border-right:2px solid var(--g2);display:flex;flex-direction:column}
+.left-top{display:flex;flex:1}
+.ded{width:46%;border-right:1px solid #c5e0c9}
+.ded .r{display:flex;align-items:flex-end;height:29px}
+.ded .r:nth-child(odd){background:#eef6e9}
+.ded .r span{width:56%;font-size:13px;font-weight:700;padding-left:5px;color:var(--g1);line-height:1.9;white-space:nowrap}
+.ded .r input{width:44%}
+.seal{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding:8px 4px;
+  background:radial-gradient(circle,#fff 40%,#eef6e9 100%)}
+.seal-box{position:relative;width:var(--seal);height:var(--seal)}
+.seal-box .wreath{position:absolute;inset:0}
+.seal-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ns{background:var(--g2d);color:#fff;font-size:11px;font-weight:700;padding:0 8px;border-radius:3px;font-family:'DM Sans',sans-serif}
+.seal-amt{font-family:'Kalam',cursive;font-size:20px;font-weight:700;color:var(--ink);margin-top:3px;line-height:1.2}
+.si{position:absolute;width:30px;height:30px}
+.si1{top:3px;left:3px}.si2{top:3px;right:3px}.si3{bottom:3px;left:3px}.si4{bottom:3px;right:3px}
+.totrow{display:flex;align-items:flex-end;border-top:2px solid var(--g2);height:38px;background:var(--g4)}
+.totrow .lbl{padding:0 10px 4px;font-size:16px;font-weight:800;color:var(--g1);font-family:'Fraunces',Georgia,serif}
+.totrow .val{flex:1;padding:0 6px}
+
+.right-box{width:38%;display:flex;flex-direction:column}
+.right-fill{flex:1;background:repeating-linear-gradient(135deg,#fafcf4,#fafcf4 8px,#eef6e9 8px,#eef6e9 16px)}
+.sumrow{display:flex;height:38px;border-top:2px solid var(--g2)}
+.sumrow+.sumrow{border-top:1px solid var(--g2)}
+.sumrow .lbl{width:46%;background:linear-gradient(180deg,#2f8559,var(--g2d));color:#fff;font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;text-align:center;font-family:'DM Sans',sans-serif}
+.sumrow .val{flex:1;display:flex;align-items:flex-end;padding:0 6px}
+
+.vine{display:flex;align-items:center;gap:6px;margin-top:10px}
+.vine .hr{flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--g3))}
+.vine .hr.r{background:linear-gradient(270deg,transparent,var(--g3))}
+.vine .v{width:22px;height:22px}
+.vine .v.flip{transform:scaleX(-1)}
+.foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:6px;gap:8px;
+  font-size:13px;font-weight:600;color:var(--g1);line-height:1.5}
+.sig{border-top:1.5px solid #555;padding-top:2px;min-width:110px;text-align:center;font-style:italic;font-weight:500;
+  font-size:13px;color:#444;font-family:'DM Sans',sans-serif}
+
+/* capture / print mode */
+.capturing .hand{border-bottom-color:transparent}
+.capturing .hand::placeholder{color:transparent}
+.capturing .no-cap{display:none!important}
+
+/* ---------- saved bills ---------- */
+#viewSaved{display:none}
+.stats{font-weight:700;color:var(--g1);font-size:14px}
+.search{width:100%;padding:9px 10px;border:1.5px solid #9ccc9f;border-radius:8px;font-size:14px;font-family:inherit;margin-top:8px}
+.card{background:#fff;border-radius:12px;padding:10px 12px;margin-top:10px;box-shadow:0 1px 4px rgba(0,0,0,.12);border-left:6px solid var(--g3)}
+.card .t{font-weight:800;color:var(--g1)}
+.card .s{font-size:13px;color:#444;margin-top:2px}
+.card .btns{margin-top:8px;gap:6px}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:14px;z-index:50}
+#modal img{max-width:100%;border-radius:8px;background:#fff}
+#modal .x{position:fixed;top:10px;right:12px;z-index:51}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1b5a3c;color:#fff;padding:10px 16px;
+  border-radius:24px;font-size:14px;display:none;z-index:60;font-weight:600}
+
+@media (max-width:560px){
+  :root{--seal:116px}
+  body{padding:8px}
+  .bill-in{padding:10px 8px 8px}
+  .shop-hi{font-size:22px}
+  .shop-en{font-size:17px}
+  .tagline{font-size:10.5px}
+  .top-mid{font-size:12px}
+  .phones{font-size:11.5px;width:92px}
+  .logo-col{width:70px}.logo-box{width:60px;height:60px}
+  .hi{width:38px;height:38px}.hi.big{width:50px;height:50px}
+  .hand{font-size:16px}
+  .bottom{flex-direction:column}
+  .left-box{width:100%;border-right:0}
+  .right-box{width:100%;border-top:2px solid var(--g2)}
+  .right-fill{display:none}
+  .sumrow:first-of-type{border-top:0}
+  .ded{width:54%}
+  .ded .r span{font-size:12px}
+  .seal-amt{font-size:16px}
+  .si{width:24px;height:24px}
+}
+@media print{
+  body{background:#fff;padding:0}
+  .no-print{display:none!important}
+  #viewSaved{display:none!important}
+  .wrap{max-width:100%}
+  @page{size:A4 portrait;margin:10mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hand{border-bottom-color:transparent}
+  .hand::placeholder{color:transparent}
+  .no-cap{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tabs no-print">
+    <button class="tab on" id="tabForm">✍️ बिल बनाएँ</button>
+    <button class="tab" id="tabSaved">📚 सेव किए बिल (<span id="cnt">0</span>)</button>
+  </div>
+
+  <!-- ================= FORM / BILL VIEW ================= -->
+  <section id="viewForm">
+
+    <div class="bill" id="bill">
+      <span class="corner c1" data-ico="leaf"></span>
+      <span class="corner c2" data-ico="leaf"></span>
+      <span class="corner c3" data-ico="leaf"></span>
+      <span class="corner c4" data-ico="leaf"></span>
+
+      <div class="bill-in">
+        <div class="top-row">
+          <div class="logo-col">
+            <div class="logo-box">
+              <img id="logo" src="logo.png" alt="">
+              <div class="logo-ph" id="logoPh">LOGO</div>
+            </div>
+            <div class="tm-txt" id="v_tm"></div>
+          </div>
+          <div class="top-mid" id="v_top"></div>
+          <div class="phones" id="v_phone"></div>
+        </div>
+
+        <div class="hero">
+          <span class="hr"></span>
+          <span class="ico hi" data-ico="onion"></span>
+          <span class="ico hi big" data-ico="tomato"></span>
+          <span class="ico hi" data-ico="potato"></span>
+          <span class="hr r"></span>
+        </div>
+
+        <div class="shop-hi" id="v_hi"></div>
+        <div class="shop-en" id="v_en"></div>
+        <div class="tagline"><span class="ico lf" data-ico="leaf"></span><span id="v_tag"></span><span class="ico lf flip" data-ico="leaf"></span></div>
+        <div class="addr" id="v_addr"></div>
+
+        <div class="meta">
+          <div class="line">
+            <div class="grow" style="max-width:40%">No. <input class="hand" id="billNo" inputmode="numeric" style="width:70px"></div>
+            <div class="grow" style="justify-content:flex-end">Date : <input class="hand" id="billDate" style="width:120px;text-align:center" placeholder="dd/mm/yy"></div>
+          </div>
+          <div class="line"><div class="grow">M/s <input class="hand" id="party" placeholder="पार्टी का नाम"></div></div>
+          <div class="line">
+            <div class="grow" style="flex:1.6">Challan No. <input class="hand" id="challan"></div>
+            <div class="grow">Basket <input class="hand" id="basket"></div>
+            <div class="grow">Bags <input class="hand" id="bags"></div>
+          </div>
+        </div>
+
+        <!-- goods -->
+        <div class="gwrap">
+          <span class="ico wm" data-ico="onion"></span>
+          <table class="goods">
+            <thead>
+              <tr>
+                <th class="c-pkgs">Pkgs.</th>
+                <th class="c-name">Name of Goods</th>
+                <th class="c-wt">Weight</th>
+                <th class="c-rate">Rate</th>
+                <th class="c-amt">Amount Rs.</th>
+                <th class="c-p">P.</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="no-print no-cap" style="margin:6px 0 2px">
+          <button class="btn alt sm" id="btnAddRow">➕ और लाइन जोड़ें</button>
+          <span class="hint">(वज़न × रेट = रकम अपने-आप बनती है)</span>
+        </div>
+
+        <!-- bottom -->
+        <div class="bottom">
+          <div class="left-box">
+            <div class="left-top">
+              <div class="ded" id="ded"></div>
+              <div class="seal">
+                <span class="ico si si1" data-ico="potato"></span>
+                <span class="ico si si2" data-ico="capsicum"></span>
+                <span class="ico si si3" data-ico="brinjal"></span>
+                <span class="ico si si4" data-ico="garlic"></span>
+                <div class="seal-box">
+                  <div class="wreath" id="wreath"></div>
+                  <div class="seal-mid">
+                    <div class="ns">Net Sale</div>
+                    <div class="seal-amt">₹ <span id="v_netsale">0</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="totrow">
+              <div class="lbl">Total</div>
+              <div class="val"><input class="hand tl" id="dedTotal" readonly tabindex="-1"></div>
+            </div>
+          </div>
+
+          <div class="right-box">
+            <div class="right-fill"></div>
+            <div class="sumrow"><div class="lbl">TOTAL</div><div class="val"><input class="hand tl" id="grand" readonly tabindex="-1"></div></div>
+            <div class="sumrow"><div class="lbl">Less T.Ex.</div><div class="val"><input class="hand tl" id="lessTex" readonly tabindex="-1"></div></div>
+            <div class="sumrow"><div class="lbl">Net Total</div><div class="val"><input class="hand tl" id="netTotal" readonly tabindex="-1"></div></div>
+          </div>
+        </div>
+
+        <div class="vine">
+          <span class="hr"></span>
+          <span class="ico v" data-ico="leaf"></span>
+          <span class="ico v" data-ico="chili"></span>
+          <span class="ico v" data-ico="carrot"></span>
+          <span class="ico v flip" data-ico="leaf"></span>
+          <span class="hr r"></span>
+        </div>
+        <div class="foot">
+          <div><div id="v_f1"></div><div id="v_f2"></div></div>
+          <div class="sig">Signature</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel no-print">
+      <div class="btns">
+        <button class="btn" id="btnPng">⬇️ फोटो डाउनलोड + सेव</button>
+        <button class="btn" id="btnShare">📤 WhatsApp शेयर + सेव</button>
+        <button class="btn alt" id="btnPrint">🖨️ प्रिंट / PDF + सेव</button>
+        <button class="btn warn" id="btnNew">🆕 नया बिल</button>
+      </div>
+      <div class="hint">फोटो डाउनलोड, शेयर या प्रिंट करते ही बिल अपने-आप "सेव किए बिल" में चला जाता है। वहाँ से कभी भी दोबारा खोल, एडिट या शेयर कर सकते हैं।</div>
+    </div>
+  </section>
+
+  <!-- ================= SAVED BILLS VIEW ================= -->
+  <section id="viewSaved">
+    <div class="panel" style="margin-top:0">
+      <div class="stats" id="stats"></div>
+      <input class="search" id="search" placeholder="🔍 पार्टी का नाम / बिल नंबर / तारीख से खोजें">
+      <div class="btns" style="margin-top:10px">
+        <button class="btn alt sm" id="btnBackup">💾 सारे बिल का बैकअप</button>
+        <button class="btn alt sm" id="btnRestore">📥 बैकअप वापस डालें</button>
+        <input type="file" id="fileRestore" accept=".json" style="display:none">
+      </div>
+      <div class="hint">बिल इसी फोन/कंप्यूटर के ब्राउज़र में सेव होते हैं। ब्राउज़र का डेटा साफ करने से पहले बैकअप ज़रूर लें।</div>
+    </div>
+    <div id="savedList"></div>
+  </section>
+</div>
+
+<div id="modal"><button class="btn x" id="modalClose">✕ बंद करें</button><img id="modalImg" alt=""></div>
+<div id="toast"></div>
+
+<script>
+(function(){
+
+/* =====================================================================
+   ★★★  दुकान की जानकारी — सिर्फ यहाँ एक बार भरें  ★★★
+   (इन्हीं ' ' के अंदर अपनी जानकारी लिख दें, बाकी कुछ न छुएँ)
+   लोगो के लिए: अपनी लोगो फोटो का नाम  logo.png  रखकर
+   index.html वाले फोल्डर में ही रख दें।
+   ===================================================================== */
+const SHOP = {
+  tm:       '',                                             // छोटा ट्रेड मार्क लिखना हो तो, जैसे 'T.M.'  (नहीं चाहिए तो खाली रखें)
+  topLine:  '॥ धन निरंकार जी 🙏🏼 ॥',
+  phones:   ['9835537412', '6204702567'],                   // एक या दो नंबर
+  nameHi:   'महंगी महतो राजेश कुमार',
+  nameEn:   'MAHANGI MAHTO RAJESH KUMAR',
+  tagline:  'Vegetable Potato, Onion, Garlic Merchants and Commission Agents',
+  address:  'Daily Market, Ramgarh cantt.-829122, Ramagrh(Jharkhand)',
+  footer1:  'भूल-चूक लेनी-देनी। मार्का साफ-साफ लिखें।',
+  footer2:  'बिल्टी देने पर चालान और रुपया मिलेगा ।'
+};
+/* ===================================================================== */
+
+const $ = id => document.getElementById(id);
+const num = v => { const n = parseFloat(String(v).replace(/,/g,'')); return isNaN(n) ? 0 : n; };
+const fmt = n => (Math.round(n*100)/100).toString();
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+};
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.style.display='block';
+  clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none',2600);
+}
+
+/* ---------- vegetable icons (small SVGs) ---------- */
+const ICONS = {
+  leaf:`<svg viewBox="0 0 64 64"><path d="M6 58C4 26 26 6 58 6C60 38 38 60 6 58Z" fill="#4f9d69"/><path d="M6 58L46 18" stroke="#fffaf0" stroke-width="3" fill="none"/></svg>`,
+  tomato:`<svg viewBox="0 0 64 64"><circle cx="32" cy="37" r="23" fill="#e53935"/><ellipse cx="22" cy="28" rx="7" ry="4" fill="#ff8a80" opacity=".65" transform="rotate(-35 22 28)"/><polygon points="32,15 36,21 44,19 40,26 47,30 38,31 32,36 26,31 17,30 24,26 20,19 28,21" fill="#2e7d32"/><rect x="30.5" y="8" width="3" height="9" rx="1.5" fill="#2e7d32"/></svg>`,
+  onion:`<svg viewBox="0 0 64 64"><path d="M32 14C40 24 54 28 54 40C54 52 44 58 32 58C20 58 10 52 10 40C10 28 24 24 32 14Z" fill="#c2548a"/><path d="M32 20C24 32 22 46 32 58M32 20C40 32 42 46 32 58M32 22C18 34 20 50 32 58M32 22C46 34 44 50 32 58" stroke="#efb0cf" stroke-width="2" fill="none"/><path d="M32 14L29 4M32 14L35 5" stroke="#8d6e63" stroke-width="3" stroke-linecap="round"/><path d="M28 58L26 62M32 58V63M36 58L38 62" stroke="#8d6e63" stroke-width="2" stroke-linecap="round"/></svg>`,
+  potato:`<svg viewBox="0 0 64 64"><path d="M10 36C8 22 26 12 42 16C57 20 60 38 49 49C38 60 14 56 10 36Z" fill="#c9975b"/><path d="M16 26C22 18 34 16 42 19" stroke="#e5c08f" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/><circle cx="24" cy="38" r="2.2" fill="#8d5a2b"/><circle cx="38" cy="30" r="2" fill="#8d5a2b"/><circle cx="42" cy="44" r="2.2" fill="#8d5a2b"/><circle cx="30" cy="48" r="1.8" fill="#8d5a2b"/></svg>`,
+  chili:`<svg viewBox="0 0 64 64"><path d="M16 20C34 16 54 30 58 58C46 50 42 38 28 32C21 29 14 28 16 20Z" fill="#d32f2f"/><path d="M22 22C34 22 46 32 52 50" stroke="#ff8a80" stroke-width="2" fill="none" opacity=".7"/><path d="M16 20C13 13 18 8 26 8" stroke="#2e7d32" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
+  brinjal:`<svg viewBox="0 0 64 64"><path d="M40 18C52 24 57 36 45 50C36 61 18 59 13 48C9 38 22 34 28 26C32 20 34 15 40 18Z" fill="#5e35b1"/><ellipse cx="26" cy="46" rx="9" ry="4" fill="#fff" opacity=".22" transform="rotate(-40 26 46)"/><path d="M33 14L48 14L45 25L35 23Z" fill="#388e3c"/><path d="M42 14L46 5" stroke="#388e3c" stroke-width="4" stroke-linecap="round"/></svg>`,
+  capsicum:`<svg viewBox="0 0 64 64"><path d="M32 18C17 16 9 29 14 43C18 56 26 59 32 54C38 59 46 56 50 43C55 29 47 16 32 18Z" fill="#43a047"/><path d="M32 20C27 32 27 44 32 54M22 22C17 32 18 46 25 55M42 22C47 32 46 46 39 55" stroke="#1b5e20" stroke-width="1.8" fill="none" opacity=".55"/><path d="M32 18C32 12 34 9 40 7" stroke="#33691e" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
+  garlic:`<svg viewBox="0 0 64 64"><path d="M32 15C45 22 55 34 49 48C45 57 19 57 15 48C9 34 19 22 32 15Z" fill="#f7f1e3" stroke="#cdbf9b" stroke-width="2"/><path d="M32 17C26 30 26 44 32 56M32 17C40 28 42 44 38 56M32 17C22 28 20 44 26 56" stroke="#d9cdb0" stroke-width="2" fill="none"/><path d="M32 15L32 6" stroke="#cdbf9b" stroke-width="4" stroke-linecap="round"/><path d="M26 58L24 62M32 58V63M38 58L40 62" stroke="#a89f86" stroke-width="2" stroke-linecap="round"/></svg>`,
+  carrot:`<svg viewBox="0 0 64 64"><path d="M14 22C22 14 32 18 38 24L58 54C60 58 56 61 52 59L20 40C12 36 10 28 14 22Z" fill="#fb8c00"/><path d="M26 30L32 28M34 38L42 36M30 46L36 44" stroke="#ffcc80" stroke-width="2.5" stroke-linecap="round"/><path d="M18 20L8 8M22 16L18 4M26 18L28 6" stroke="#2e7d32" stroke-width="4" stroke-linecap="round"/></svg>`
+};
+document.querySelectorAll('[data-ico]').forEach(el=>{ el.innerHTML = ICONS[el.dataset.ico] || ''; });
+
+/* leaf wreath around the Net Sale seal */
+(function(){
+  let s='<svg viewBox="-80 -80 160 160" style="width:100%;height:100%">';
+  s+='<circle r="53" fill="#fff" stroke="#4f9d69" stroke-width="3"/><circle r="47" fill="none" stroke="#c5e0c9" stroke-width="1.5" stroke-dasharray="3 3"/>';
+  const n=14;
+  for(let i=0;i<n;i++){ s+=`<g transform="rotate(${i*360/n})"><ellipse cx="0" cy="-65" rx="6" ry="12" fill="${i%2?'#4f9d69':'#1f6b45'}"/></g>`; }
+  for(let i=0;i<n;i++){ s+=`<g transform="rotate(${(i+.5)*360/n})"><circle cx="0" cy="-61" r="3.2" fill="#e2553c"/></g>`; }
+  $('wreath').innerHTML = s+'</svg>';
+})();
+
+/* ---------- fill fixed shop details ---------- */
+(function(){
+  $('v_tm').textContent   = SHOP.tm;
+  $('v_top').textContent  = SHOP.topLine;
+  $('v_phone').innerHTML  = SHOP.phones.filter(Boolean).join('<br>');
+  $('v_hi').textContent   = SHOP.nameHi;
+  $('v_en').textContent   = SHOP.nameEn;
+  $('v_tag').textContent  = SHOP.tagline;
+  $('v_addr').textContent = SHOP.address;
+  $('v_f1').textContent   = SHOP.footer1;
+  $('v_f2').textContent   = SHOP.footer2;
+  document.title = SHOP.nameEn || 'Bill Book';
+  const logo = $('logo');
+  logo.onerror = ()=>{ logo.style.display='none'; $('logoPh').style.display='block'; };
+})();
+
+/* ---------- IndexedDB (saved bills) ---------- */
+const DB = {
+  db:null,
+  open(){ return new Promise((res,rej)=>{
+    const r=indexedDB.open('billbook',1);
+    r.onupgradeneeded=()=>{ r.result.createObjectStore('bills',{keyPath:'no'}); };
+    r.onsuccess=()=>{ DB.db=r.result; res(); };
+    r.onerror=()=>rej(r.error);
+  });},
+  st(mode){ return DB.db.transaction('bills',mode).objectStore('bills'); },
+  req(q){ return new Promise((res,rej)=>{ q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); },
+  put(o){ return DB.req(DB.st('readwrite').put(o)); },
+  get(no){ return DB.req(DB.st('readonly').get(no)); },
+  all(){ return DB.req(DB.st('readonly').getAll()); },
+  del(no){ return DB.req(DB.st('readwrite').delete(no)); }
+};
+
+/* ---------- deductions ---------- */
+const dedLabels = ['नगदी','कमीशन','कुली','ट्रक भाड़ा','गाड़ी टैक्स','रिक्सा','तहरीर','मासुल','काँटा'];
+dedLabels.forEach((l,i)=>{
+  $('ded').insertAdjacentHTML('beforeend',
+    `<div class="r"><span>${l}</span><input class="hand num dedin" inputmode="decimal"></div>`);
+});
+const dedInputs = () => [...document.querySelectorAll('.dedin')];
+
+/* ---------- goods rows ---------- */
+const rows = $('rows');
+function addRow(data){
+  data = data || {};
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input class="hand" data-f="pkgs"></td>
+    <td><input class="hand" data-f="name" placeholder="माल का नाम"></td>
+    <td><input class="hand num" data-f="wt" inputmode="decimal"></td>
+    <td><input class="hand num" data-f="rate" inputmode="decimal"></td>
+    <td><input class="hand num" data-f="amt" inputmode="decimal"></td>
+    <td style="text-align:center"><button class="rowdel no-print no-cap" title="लाइन हटाएँ">✕</button></td>`;
+  rows.appendChild(tr);
+  const f = n => tr.querySelector(`[data-f=${n}]`);
+  ['pkgs','name','wt','rate','amt'].forEach(k=>{ f(k).value = data[k] || ''; });
+  const auto = ()=>{
+    if(f('wt').value!=='' && f('rate').value!==''){ f('amt').value = fmt(num(f('wt').value)*num(f('rate').value)); }
+    calc();
+  };
+  f('wt').addEventListener('input', auto);
+  f('rate').addEventListener('input', auto);
+  tr.addEventListener('input', saveDraft);
+  tr.querySelector('.rowdel').addEventListener('click', ()=>{
+    if(rows.children.length>1){ tr.remove(); calc(); }
+  });
+}
+
+/* ---------- calculations ---------- */
+function calc(){
+  let total=0;
+  rows.querySelectorAll('[data-f=amt]').forEach(i=> total+=num(i.value));
+  let d=0; dedInputs().forEach(i=> d+=num(i.value));
+  const net = total-d;
+  $('grand').value    = total ? fmt(total) : '';
+  $('dedTotal').value = d ? fmt(d) : '';
+  $('lessTex').value  = d ? fmt(d) : '';
+  $('netTotal').value = (total||d) ? fmt(net) : '';
+  $('v_netsale').textContent = (total||d) ? fmt(net) : '0';
+  saveDraft();
+}
+dedInputs().forEach(i=> i.addEventListener('input', calc));
+
+/* ---------- draft ---------- */
+function today(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2);
+}
+function collect(){
+  return {
+    no:num($('billNo').value)||1, date:$('billDate').value, party:$('party').value,
+    challan:$('challan').value, basket:$('basket').value, bags:$('bags').value,
+    rows:[...rows.children].map(tr=>{
+      const g=n=>tr.querySelector(`[data-f=${n}]`).value;
+      return {pkgs:g('pkgs'),name:g('name'),wt:g('wt'),rate:g('rate'),amt:g('amt')};
+    }),
+    ded:dedInputs().map(i=>i.value)
+  };
+}
+function applyData(d){
+  d = d || {};
+  $('billNo').value   = d.no || 1;
+  $('billDate').value = d.date || today();
+  $('party').value    = d.party || '';
+  $('challan').value  = d.challan || '';
+  $('basket').value   = d.basket || '';
+  $('bags').value     = d.bags || '';
+  rows.innerHTML='';
+  (d.rows && d.rows.length ? d.rows : [{},{}]).forEach(addRow);
+  dedInputs().forEach((i,k)=> i.value = (d.ded && d.ded[k]) || '');
+  calc();
+}
+function bumpMax(no){ if(no > store.get('bb2_max',0)) store.set('bb2_max',no); }
+function saveDraft(){ const d=collect(); store.set('bb2_draft',d); bumpMax(d.no); }
+['billNo','billDate','party','challan','basket','bags'].forEach(id=> $(id).addEventListener('input', saveDraft));
+$('btnAddRow').addEventListener('click', ()=> addRow());
+
+/* ---------- export helpers ---------- */
+async function makeCanvas(){
+  const bill=$('bill');
+  bill.classList.add('capturing');
+  try{
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    const scale = Math.min(4, Math.max(2, 1500/bill.offsetWidth));
+    return await html2canvas(bill,{scale, backgroundColor:'#f2eee2', useCORS:true});
+  } finally { bill.classList.remove('capturing'); }
+}
+async function toBlob(){
+  const c = await makeCanvas();
+  return new Promise(res=> c.toBlob(res,'image/png'));
+}
+function safeName(no,party){
+  return `Bill_${no}_${(party||'').replace(/[^\w\u0900-\u097F]+/g,'_')||'bill'}.png`;
+}
+function download(blob,name){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+async function shareBlob(blob,name,title){
+  const file=new File([blob],name,{type:'image/png'});
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    await navigator.share({files:[file],title});
+    return true;
+  }
+  download(blob,name);
+  alert('इस डिवाइस पर सीधा शेयर नहीं हो सकता। फोटो डाउनलोड हो गई है, उसे WhatsApp में भेज दें।');
+  return false;
+}
+
+/* ---------- save bill to the website ---------- */
+async function saveCurrent(){
+  const blob = await toBlob();
+  const d = collect();
+  const rec = {
+    no:d.no, savedAt:Date.now(), party:d.party, date:d.date,
+    total:num($('grand').value), net:num($('netTotal').value), data:d, png:blob
+  };
+  await DB.put(rec);
+  bumpMax(d.no);
+  refreshCount();
+  return {blob, rec};
+}
+
+$('btnPng').addEventListener('click', async ()=>{
+  try{
+    const {blob,rec} = await saveCurrent();
+    download(blob, safeName(rec.no,rec.party));
+    toast('✅ बिल डाउनलोड और सेव हो गया');
+  }catch(e){ console.error(e); alert('फोटो नहीं बन पाई। इंटरनेट चालू है या नहीं देखें और फिर कोशिश करें।'); }
+});
+$('btnShare').addEventListener('click', async ()=>{
+  try{
+    const {blob,rec} = await saveCurrent();
+    toast('✅ बिल सेव हो गया');
+    await shareBlob(blob, safeName(rec.no,rec.party), 'Bill '+rec.no);
+  }catch(e){ if(e && e.name!=='AbortError'){ console.error(e); alert('शेयर नहीं हो पाया। "फोटो डाउनलोड" बटन आज़माएँ।'); } }
+});
+$('btnPrint').addEventListener('click', async ()=>{
+  try{ await saveCurrent(); toast('✅ बिल सेव हो गया'); }catch(e){ console.error(e); }
+  window.print();
+});
+
+/* ---------- new bill ---------- */
+$('btnNew').addEventListener('click', async ()=>{
+  if(!confirm('नया बिल शुरू करें? मौजूदा बिल साफ हो जाएगा (अगर डाउनलोड/शेयर नहीं किया तो सेव नहीं होगा)।')) return;
+  const saved = await DB.all();
+  const maxSaved = saved.reduce((m,r)=>Math.max(m,r.no),0);
+  const next = Math.max(store.get('bb2_max',0), maxSaved, num($('billNo').value)) + 1;
+  store.set('bb2_max',next);
+  applyData({no:next});
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ---------- tabs ---------- */
+function showView(v){
+  $('viewForm').style.display  = v==='form' ? 'block':'none';
+  $('viewSaved').style.display = v==='saved'? 'block':'none';
+  $('tabForm').classList.toggle('on', v==='form');
+  $('tabSaved').classList.toggle('on', v==='saved');
+  if(v==='saved') renderSaved();
+  window.scrollTo({top:0});
+}
+$('tabForm').addEventListener('click', ()=>showView('form'));
+$('tabSaved').addEventListener('click', ()=>showView('saved'));
+
+/* ---------- saved bills list ---------- */
+async function refreshCount(){ const a=await DB.all(); $('cnt').textContent=a.length; }
+
+async function renderSaved(){
+  const list = (await DB.all()).sort((a,b)=>b.no-a.no);
+  $('cnt').textContent = list.length;
+  const sum = list.reduce((s,r)=>s+(r.net||0),0);
+  $('stats').textContent = `कुल बिल: ${list.length}   |   कुल नेट बिक्री: ₹ ${fmt(sum)}`;
+  const q = $('search').value.trim().toLowerCase();
+  const box = $('savedList'); box.innerHTML='';
+  const shown = list.filter(r=> !q || (r.no+' '+(r.party||'')+' '+(r.date||'')).toLowerCase().includes(q));
+  if(!shown.length){
+    const p=document.createElement('div'); p.className='hint'; p.style.textAlign='center';
+    p.textContent = list.length ? 'कोई बिल नहीं मिला।' : 'अभी कोई बिल सेव नहीं है। बिल डाउनलोड या शेयर करने पर वह यहाँ आ जाएगा।';
+    box.appendChild(p); return;
+  }
+  shown.forEach(r=>{
+    const c=document.createElement('div'); c.className='card';
+    const t=document.createElement('div'); t.className='t'; t.textContent=`बिल नं. ${r.no}  ·  ${r.date||''}`;
+    const s=document.createElement('div'); s.className='s';
+    s.textContent=`${r.party||'(नाम नहीं)'}   |   कुल: ₹ ${fmt(r.total||0)}   |   नेट: ₹ ${fmt(r.net||0)}`;
+    const b=document.createElement('div'); b.className='btns';
+    const mk=(label,cls,fn)=>{ const x=document.createElement('button'); x.className='btn sm '+cls; x.textContent=label; x.onclick=fn; b.appendChild(x); };
+    mk('👁 देखें','alt',()=>{ $('modalImg').src=URL.createObjectURL(r.png); $('modal').style.display='flex'; });
+    mk('⬇️ डाउनलोड','',()=> download(r.png, safeName(r.no,r.party)));
+    mk('📤 शेयर','',async()=>{ try{ await shareBlob(r.png, safeName(r.no,r.party),'Bill '+r.no);}catch(e){} });
+    mk('✏️ एडिट','alt',()=>{ applyData(r.data); showView('form'); toast('बिल एडिट के लिए खुल गया — दोबारा डाउनलोड करने पर यही बिल अपडेट होगा'); });
+    mk('🗑 हटाएँ','warn',async()=>{ if(confirm(`बिल नं. ${r.no} हमेशा के लिए हटाएँ?`)){ await DB.del(r.no); renderSaved(); } });
+    c.append(t,s,b); box.appendChild(c);
+  });
+}
+$('search').addEventListener('input', renderSaved);
+$('modalClose').addEventListener('click', ()=>{ $('modal').style.display='none'; });
+
+/* ---------- backup / restore ---------- */
+const blobToDataURL = b => new Promise(res=>{ const f=new FileReader(); f.onload=()=>res(f.result); f.readAsDataURL(b); });
+$('btnBackup').addEventListener('click', async ()=>{
+  const all = await DB.all();
+  if(!all.length){ alert('अभी कोई बिल सेव नहीं है।'); return; }
+  const out=[];
+  for(const r of all){ out.push(Object.assign({}, r, {png: await blobToDataURL(r.png)})); }
+  download(new Blob([JSON.stringify(out)],{type:'application/json'}), 'billbook-backup-'+today().replace(/\//g,'-')+'.json');
+  toast('✅ बैकअप फाइल डाउनलोड हो गई');
+});
+$('btnRestore').addEventListener('click', ()=> $('fileRestore').click());
+$('fileRestore').addEventListener('change', async e=>{
+  const file=e.target.files[0]; if(!file) return;
+  try{
+    const arr = JSON.parse(await file.text());
+    for(const r of arr){ r.png = await (await fetch(r.png)).blob(); await DB.put(r); bumpMax(r.no); }
+    toast(`✅ ${arr.length} बिल वापस आ गए`); renderSaved();
+  }catch(err){ alert('यह बैकअप फाइल सही नहीं है।'); }
+  e.target.value='';
+});
+
+/* ---------- start ---------- */
+DB.open().then(()=>{
+  const d = store.get('bb2_draft', null);
+  applyData(d || {no:1});
+  refreshCount();
+  if(navigator.storage && navigator.storage.persist){ navigator.storage.persist(); }
+}).catch(()=>{
+  applyData(store.get('bb2_draft', null) || {no:1});
+  alert('इस ब्राउज़र में बिल सेव करने की सुविधा नहीं चल रही। Chrome इस्तेमाल करें (Private/Incognito window में न खोलें)।');
+});
+})();
+</script>
+</body>
+</html>
